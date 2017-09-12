@@ -5,6 +5,8 @@
   }
 }
 
+#' Reinstall Wishbone
+#'
 #' @export
 #' @importFrom glue glue
 reinstall <- function() {
