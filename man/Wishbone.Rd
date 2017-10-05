@@ -6,7 +6,7 @@
 \usage{
 Wishbone(counts, start_cell_id, knn = 10, n_diffusion_components = 2,
   n_pca_components = 15, markers = "~", branch = TRUE, k = 15,
-  num_waypoints = 50, normalize = TRUE, epsilon = 1)
+  num_waypoints = 50, normalize = TRUE, epsilon = 1, verbose = F)
 }
 \arguments{
 \item{counts}{Counts}
@@ -23,13 +23,15 @@ Wishbone(counts, start_cell_id, knn = 10, n_diffusion_components = 2,
 
 \item{branch}{whether or not to branch or linear}
 
-\item{k}{k papram}
+\item{k}{k param}
 
 \item{num_waypoints}{number of waypoints}
 
 \item{normalize}{whether or not to normalize}
 
 \item{epsilon}{epsilon param}
+
+\item{verbose}{whether or not to print the wishbone output}
 }
 \description{
 Execute Wishbone

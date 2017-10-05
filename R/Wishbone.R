@@ -7,10 +7,11 @@
 #' @param n_pca_components number of pca components
 #' @param markers markers to use
 #' @param branch whether or not to branch or linear
-#' @param k k papram
+#' @param k k param
 #' @param num_waypoints number of waypoints
 #' @param normalize whether or not to normalize
 #' @param epsilon epsilon param
+#' @param verbose whether or not to print the wishbone output
 #'
 #' @importFrom jsonlite toJSON read_json
 #' @importFrom glue glue
