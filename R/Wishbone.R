@@ -30,7 +30,8 @@ Wishbone <- function(
   k = 15,
   num_waypoints = 50,
   normalize = TRUE,
-  epsilon = 1
+  epsilon = 1,
+  verbose = F
 ) {
   temp_folder <- tempfile()
   dir.create(temp_folder, recursive = TRUE)
@@ -59,14 +60,18 @@ Wishbone <- function(
     ), stdout = TRUE, stderr = TRUE
   )
 
-  print(output)
+  if (verbose) cat(output, "\n", sep="")
 
+  # read output
   branch_assignment <- unlist(jsonlite::read_json(paste0(temp_folder, "/branch.json"))) %>%
     {tibble::tibble(branch=., cell_id=names(.))}
   trajectory <- unlist(jsonlite::read_json(paste0(temp_folder, "/trajectory.json"))) %>%
     {tibble::tibble(time=., cell_id=names(.))}
 
   space <- readr::read_csv(paste0(temp_folder, "/dm.csv")) %>% rename(cell_id=X1) %>% rename_if(is.numeric, funs(paste0("Comp", .)))
+
+  # remove temporary output
+  unlink(temp_folder, recursive = TRUE)
 
   list(
     branch_assignment = branch_assignment,
