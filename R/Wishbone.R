@@ -36,12 +36,15 @@ Wishbone <- function(
   epsilon = 1,
   verbose = F
 ) {
+  # create temporary folder
   temp_folder <- tempfile()
   dir.create(temp_folder, recursive = TRUE)
 
+  # write counts to temporary folder
   expr <- log2(counts+1)
   utils::write.table(as.data.frame(counts), paste0(temp_folder, "/counts.tsv"), sep="\t")
 
+  # write parameters to temporary folder
   params <- as.list(environment())[formalArgs(Wishbone)]
   params <- params[names(params) != "counts"]
   params[["components_list"]] <- seq_len(n_diffusion_components)-1
@@ -51,6 +54,7 @@ Wishbone <- function(
     paste0(temp_folder, "/params.json")
   )
 
+  # execute python script
   output <- system2(
     "/bin/bash",
     args = c(
@@ -66,12 +70,21 @@ Wishbone <- function(
   if (verbose) cat(output, "\n", sep="")
 
   # read output
-  branch_assignment <- unlist(jsonlite::read_json(paste0(temp_folder, "/branch.json"))) %>%
-    {tibble::tibble(branch=., cell_id=names(.))}
-  trajectory <- unlist(jsonlite::read_json(paste0(temp_folder, "/trajectory.json"))) %>%
-    {tibble::tibble(time=., cell_id=names(.))}
+  branch_filename <- paste0(temp_folder, "/branch.json")
+  trajectory_filename <- paste0(temp_folder, "/trajectory.json")
+  dimred_filename <- paste0(temp_folder, "/dm.csv")
 
-  space <- readr::read_csv(paste0(temp_folder, "/dm.csv")) %>% rename(cell_id=X1) %>% rename_if(is.numeric, funs(paste0("Comp", .)))
+  branch_assignment <- jsonlite::read_json(branch_filename) %>%
+    unlist() %>%
+    {tibble::tibble(branch = ., cell_id = names(.))}
+
+  trajectory <- jsonlite::read_json(trajectory_filename) %>%
+    unlist() %>%
+    {tibble::tibble(time = ., cell_id = names(.))}
+
+  space <- readr::read_csv(dimred_filename) %>%
+    rename(cell_id = X1) %>%
+    rename_if(is.numeric, funs(paste0("Comp", .)))
 
   # remove temporary output
   unlink(temp_folder, recursive = TRUE)
