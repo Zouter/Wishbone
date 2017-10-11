@@ -20,6 +20,8 @@
 #' @importFrom readr read_csv
 #' @importFrom dplyr rename rename_if
 #' @importFrom utils write.table
+#'
+#' @export
 Wishbone <- function(
   counts,
   start_cell_id,
