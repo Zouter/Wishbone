@@ -90,9 +90,9 @@ Wishbone <- function(
       check.names = FALSE,
       header = FALSE,
       stringsAsFactors = FALSE,
-      skip = 1,
-      col.names = c("cell_id", paste0("Comp", seq_len(ncol(space)-1)))
+      skip = 1
     )
+    colnames(space) <- c("cell_id", paste0("Comp", seq_len(ncol(space)-1)))
 
   }, finally = {
     # remove temporary output
