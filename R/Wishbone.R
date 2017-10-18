@@ -90,10 +90,9 @@ Wishbone <- function(
       check.names = FALSE,
       header = FALSE,
       stringsAsFactors = FALSE,
-      skip = 1
-    ) %>%
-      rename(cell_id = V1) %>%
-      rename_if(is.numeric, function(x) paste0("Comp", x))
+      skip = 1,
+      col.names = c("cell_id", paste0("Comp", seq_len(ncol(space)-1)))
+    )
 
   }, finally = {
     # remove temporary output
