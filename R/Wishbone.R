@@ -85,9 +85,15 @@ Wishbone <- function(
       {tibble::tibble(time = ., cell_id = names(.))}
 
     # read in dim red
-    space <- utils::read.csv(dimred_filename, check.names = FALSE, header = FALSE, stringsAsFactors = FALSE, skip = 1) %>%
+    space <- utils::read.csv(
+      dimred_filename,
+      check.names = FALSE,
+      header = FALSE,
+      stringsAsFactors = FALSE,
+      skip = 1
+    ) %>%
       rename(cell_id = V1) %>%
-      rename_if(is.numeric, funs(paste0("Comp", .)))
+      rename_if(is.numeric, function(X) paste0("Comp", .))
 
   }, finally = {
     # remove temporary output
