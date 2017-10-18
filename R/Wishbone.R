@@ -17,9 +17,8 @@
 #' @importFrom glue glue
 #' @importFrom tibble tibble
 #' @importFrom purrr %>%
-#' @importFrom readr read_csv
 #' @importFrom dplyr rename rename_if
-#' @importFrom utils write.table
+#' @importFrom utils write.table read.csv
 #'
 #' @export
 Wishbone <- function(
@@ -40,54 +39,60 @@ Wishbone <- function(
   temp_folder <- tempfile()
   dir.create(temp_folder, recursive = TRUE)
 
-  # write counts to temporary folder
-  expr <- log2(counts+1)
-  utils::write.table(as.data.frame(counts), paste0(temp_folder, "/counts.tsv"), sep="\t")
+  tryCatch({
+    # write counts to temporary folder
+    expr <- log2(counts+1)
+    utils::write.table(as.data.frame(counts), paste0(temp_folder, "/counts.tsv"), sep="\t")
 
-  # write parameters to temporary folder
-  params <- as.list(environment())[formalArgs(Wishbone)]
-  params <- params[names(params) != "counts"]
-  params[["components_list"]] <- seq_len(n_diffusion_components)-1
+    # write parameters to temporary folder
+    params <- as.list(environment())[formalArgs(Wishbone)]
+    params <- params[names(params) != "counts"]
+    params[["components_list"]] <- seq_len(n_diffusion_components)-1
 
-  write(
-    jsonlite::toJSON(params, auto_unbox = TRUE),
-    paste0(temp_folder, "/params.json")
-  )
+    write(
+      jsonlite::toJSON(params, auto_unbox = TRUE),
+      paste0(temp_folder, "/params.json")
+    )
 
-  # execute python script
-  output <- system2(
-    "/bin/bash",
-    args = c(
-      "-c",
-      shQuote(glue::glue(
-        "cd {find.package('Wishbone')}/venv",
-        "source bin/activate",
-        "python {find.package('Wishbone')}/wrapper.py {temp_folder}",
-        .sep = ";"))
-    ), stdout = TRUE, stderr = TRUE
-  )
+    # execute python script
+    output <- system2(
+      "/bin/bash",
+      args = c(
+        "-c",
+        shQuote(glue::glue(
+          "cd {find.package('Wishbone')}/venv",
+          "source bin/activate",
+          "python {find.package('Wishbone')}/wrapper.py {temp_folder}",
+          .sep = ";"))
+      ), stdout = TRUE, stderr = TRUE
+    )
 
-  if (verbose) cat(output, "\n", sep="")
+    if (verbose) cat(output, "\n", sep="")
 
-  # read output
-  branch_filename <- paste0(temp_folder, "/branch.json")
-  trajectory_filename <- paste0(temp_folder, "/trajectory.json")
-  dimred_filename <- paste0(temp_folder, "/dm.csv")
+    # read output
+    branch_filename <- paste0(temp_folder, "/branch.json")
+    trajectory_filename <- paste0(temp_folder, "/trajectory.json")
+    dimred_filename <- paste0(temp_folder, "/dm.csv")
 
-  branch_assignment <- jsonlite::read_json(branch_filename) %>%
-    unlist() %>%
-    {tibble::tibble(branch = ., cell_id = names(.))}
+    # read in branch assignment
+    branch_assignment <- jsonlite::read_json(branch_filename) %>%
+      unlist() %>%
+      {tibble::tibble(branch = ., cell_id = names(.))}
 
-  trajectory <- jsonlite::read_json(trajectory_filename) %>%
-    unlist() %>%
-    {tibble::tibble(time = ., cell_id = names(.))}
+    # read in trajectory
+    trajectory <- jsonlite::read_json(trajectory_filename) %>%
+      unlist() %>%
+      {tibble::tibble(time = ., cell_id = names(.))}
 
-  space <- readr::read_csv(dimred_filename) %>%
-    rename(cell_id = X1) %>%
-    rename_if(is.numeric, funs(paste0("Comp", .)))
+    # read in dim red
+    space <- utils::read.csv(dimred_filename, check.names = FALSE, header = FALSE, stringsAsFactors = FALSE, skip = 1) %>%
+      rename(cell_id = V1) %>%
+      rename_if(is.numeric, funs(paste0("Comp", .)))
 
-  # remove temporary output
-  unlink(temp_folder, recursive = TRUE)
+  }, finally = {
+    # remove temporary output
+    unlink(temp_folder, recursive = TRUE)
+  })
 
   list(
     branch_assignment = branch_assignment,
