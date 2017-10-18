@@ -93,7 +93,7 @@ Wishbone <- function(
       skip = 1
     ) %>%
       rename(cell_id = V1) %>%
-      rename_if(is.numeric, function(X) paste0("Comp", .))
+      rename_if(is.numeric, function(x) paste0("Comp", x))
 
   }, finally = {
     # remove temporary output
