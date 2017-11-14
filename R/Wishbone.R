@@ -33,7 +33,7 @@ Wishbone <- function(
   num_waypoints = 50,
   normalize = TRUE,
   epsilon = 1,
-  verbose = F
+  verbose = FALSE
 ) {
   # create temporary folder
   temp_folder <- tempfile()
@@ -45,9 +45,20 @@ Wishbone <- function(
     utils::write.table(as.data.frame(counts), paste0(temp_folder, "/counts.tsv"), sep="\t")
 
     # write parameters to temporary folder
-    params <- as.list(environment())[formalArgs(Wishbone)]
-    params <- params[names(params) != "counts"]
-    params[["components_list"]] <- seq_len(n_diffusion_components)-1
+    params <- tibble::lst(
+      start_cell_id,
+      knn,
+      n_diffusion_components,
+      n_pca_components,
+      markers,
+      branch,
+      k,
+      num_waypoints,
+      normalize,
+      epsilon,
+      verbose,
+      components_list = seq_len(n_diffusion_components)-1
+    )
 
     write(
       jsonlite::toJSON(params, auto_unbox = TRUE),
