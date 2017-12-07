@@ -41,7 +41,6 @@ Wishbone <- function(
 
   tryCatch({
     # write counts to temporary folder
-    expr <- log2(counts+1)
     utils::write.table(as.data.frame(counts), paste0(temp_folder, "/counts.tsv"), sep="\t")
 
     # write parameters to temporary folder
