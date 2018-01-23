@@ -66,23 +66,14 @@ Wishbone <- function(
     )
 
     # execute python script
-    output <- system2(
-      "/bin/bash",
-      args = c(
-        "-c",
-        shQuote(glue::glue(
-          "cd {find.package('Wishbone')}/venv",
-          "source bin/activate",
-          "python {find.package('Wishbone')}/wrapper.py {temp_folder}",
-          .sep = ";"))
-      ), stdout = TRUE, stderr = TRUE
-    )
 
-    if(length(attr(output, "status")) && attr(output, "status") == 1) {
-      op <- options(warning.length=4000)
-      on.exit(options(op))
-      stop("Error in python wrapper: \n", paste0(output, collapse="\n"))
-    }
+    command <- glue::glue(
+      "cd {find.package('Wishbone')}/venv",
+      "source bin/activate",
+      "python {find.package('Wishbone')}/wrapper.py {temp_folder}",
+      .sep = ";"
+    )
+    output <- dynutils::run_until_exit(command)
 
     # read output
     branch_filename <- paste0(temp_folder, "/branch.json")
