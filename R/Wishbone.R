@@ -78,7 +78,11 @@ Wishbone <- function(
       ), stdout = TRUE, stderr = TRUE
     )
 
-    if (verbose) cat(output, "\n", sep="")
+    if(length(attr(output, "status")) && attr(output, "status") == 1) {
+      op <- options(warning.length=4000)
+      stop("Error in python wrapper: \n", paste0(output, collapse="\n"))
+      on.exit(options(op))
+    }
 
     # read output
     branch_filename <- paste0(temp_folder, "/branch.json")

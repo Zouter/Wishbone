@@ -7,5 +7,5 @@ if [ ! -d $install_dir ]; then
   cd $install_dir
   source bin/activate
   pip install Cython
-  pip install git+https://github.com/dynverse/pywishbone
+  pip install git+https://github.com/dynverse/pywishbone --upgrade --upgrade-strategy only-if-needed
 fi

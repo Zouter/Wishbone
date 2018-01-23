@@ -15,7 +15,7 @@ scdata.run_pca()
 scdata.run_diffusion_map(knn=p["knn"], epsilon=p["epsilon"], n_diffusion_components=p["n_diffusion_components"], n_pca_components=p["n_pca_components"], markers=p["markers"])
 
 wb = wishbone.wb.Wishbone(scdata)
-wb.run_wishbone(start_cell=p["start_cell_id"], components_list=p["components_list"], num_waypoints=p["num_waypoints"], branch=p["branch"], k=p["k"])
+wb.run_wishbone(start_cell=p["start_cell_id"], components_list=p["components_list"], num_waypoints=int(p["num_waypoints"]), branch=p["branch"], k=p["k"])
 
 wb.trajectory.to_json(temp_folder + "/trajectory.json")
 if p["branch"]:
