@@ -80,8 +80,8 @@ Wishbone <- function(
 
     if(length(attr(output, "status")) && attr(output, "status") == 1) {
       op <- options(warning.length=4000)
-      stop("Error in python wrapper: \n", paste0(output, collapse="\n"))
       on.exit(options(op))
+      stop("Error in python wrapper: \n", paste0(output, collapse="\n"))
     }
 
     # read output
