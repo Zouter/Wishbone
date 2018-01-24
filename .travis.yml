@@ -4,3 +4,5 @@ dist: trusty
 bioc_required: true
 cache: packages
 warnings_are_errors: true
+env:
+  - R_MAX_NUM_DLLS=250
