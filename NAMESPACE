@@ -3,6 +3,7 @@
 export(Wishbone)
 importFrom(dplyr,rename)
 importFrom(dplyr,rename_if)
+importFrom(dynutils,run_until_exit)
 importFrom(glue,glue)
 importFrom(jsonlite,read_json)
 importFrom(jsonlite,toJSON)

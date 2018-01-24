@@ -19,6 +19,8 @@
 #' @importFrom purrr %>%
 #' @importFrom dplyr rename rename_if
 #' @importFrom utils write.table read.csv
+#' @importFrom dynutils run_until_exit
+#'
 #'
 #' @export
 Wishbone <- function(
@@ -66,14 +68,13 @@ Wishbone <- function(
     )
 
     # execute python script
-
-    command <- glue::glue(
+    commands <- glue::glue(
       "cd {find.package('Wishbone')}/venv",
       "source bin/activate",
       "python {find.package('Wishbone')}/wrapper.py {temp_folder}",
       .sep = ";"
     )
-    output <- dynutils::run_until_exit(command)
+    output <- dynutils::run_until_exit(commands)
 
     # read output
     branch_filename <- paste0(temp_folder, "/branch.json")
