@@ -17,3 +17,5 @@ Imports:
   tibble,
   utils,
   dynutils
+Remotes:
+  rcannood/dynutils,
