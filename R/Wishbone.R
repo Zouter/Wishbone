@@ -12,6 +12,7 @@
 #' @param normalize whether or not to normalize
 #' @param epsilon epsilon param
 #' @param verbose whether or not to print the wishbone output
+#' @param num_cores number of cores to use
 #'
 #' @importFrom jsonlite toJSON read_json
 #' @importFrom glue glue
@@ -35,7 +36,8 @@ Wishbone <- function(
   num_waypoints = 50,
   normalize = TRUE,
   epsilon = 1,
-  verbose = FALSE
+  verbose = FALSE,
+  num_cores = 1
 ) {
   # create temporary folder
   temp_folder <- tempfile()
@@ -67,10 +69,21 @@ Wishbone <- function(
       paste0(temp_folder, "/params.json")
     )
 
+    if (!is.null(num_cores)) {
+      num_cores_str <- glue::glue(
+        "export MKL_NUM_THREADS={num_cores};",
+        "export NUMEXPR_NUM_THREADS={num_cores};",
+        "export OMP_NUM_THREADS={num_cores}"
+      )
+    } else {
+      num_cores_str <- "echo 'no cores'"
+    }
+
     # execute python script
     commands <- glue::glue(
       "cd {find.package('Wishbone')}/venv",
       "source bin/activate",
+      "{num_cores_str}",
       "python {find.package('Wishbone')}/wrapper.py {temp_folder}",
       .sep = ";"
     )

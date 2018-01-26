@@ -6,7 +6,8 @@
 \usage{
 Wishbone(counts, start_cell_id, knn = 10, n_diffusion_components = 2,
   n_pca_components = 15, markers = "~", branch = TRUE, k = 15,
-  num_waypoints = 50, normalize = TRUE, epsilon = 1, verbose = FALSE)
+  num_waypoints = 50, normalize = TRUE, epsilon = 1, verbose = FALSE,
+  num_cores = 1)
 }
 \arguments{
 \item{counts}{Counts}
@@ -32,6 +33,8 @@ Wishbone(counts, start_cell_id, knn = 10, n_diffusion_components = 2,
 \item{epsilon}{epsilon param}
 
 \item{verbose}{whether or not to print the wishbone output}
+
+\item{num_cores}{number of cores to use}
 }
 \description{
 Execute Wishbone
