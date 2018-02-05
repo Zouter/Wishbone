@@ -18,4 +18,4 @@ Imports:
   utils,
   dynutils
 Remotes:
-  rcannood/dynutils,
+  rcannood/dynutils
