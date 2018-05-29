@@ -8,5 +8,4 @@ env:
   - R_MAX_NUM_DLLS=250
 install:
   - R -e 'install.packages("devtools")'
-  - R -e 'setRepositories(ind = 1:2)'
-  - R -e 'devtools::install(dependencies = T, upgrade = T)'
+  - R -e 'setRepositories(ind = 1:2);devtools::install(dependencies = T, upgrade = T)'
