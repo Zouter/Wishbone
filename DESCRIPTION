@@ -16,6 +16,4 @@ Imports:
   purrr,
   tibble,
   utils,
-  dynutils
-Remotes:
-  rcannood/dynutils
+  processx

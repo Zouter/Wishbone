@@ -20,7 +20,6 @@
 #' @importFrom purrr %>%
 #' @importFrom dplyr rename rename_if
 #' @importFrom utils write.table read.csv
-#' @importFrom dynutils run_until_exit
 #'
 #'
 #' @export
@@ -87,7 +86,7 @@ Wishbone <- function(
       "python {find.package('Wishbone')}/wrapper.py {temp_folder}",
       .sep = ";"
     )
-    output <- dynutils::run_until_exit(commands)
+    output <- processx::run("/bin/bash", c("-c", commands), echo=TRUE)
 
     # read output
     branch_filename <- paste0(temp_folder, "/branch.json")
